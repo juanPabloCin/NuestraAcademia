@@ -4,157 +4,109 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Academia SEF – Formación Profesional y Seguridad Informática</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="scripts.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
-  <header class="bg-blue-900 text-white p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">Academia SEF</h1>
-    <nav class="space-x-6">
-      <a href="#cursos" class="hover:underline">Cursos</a>
-      <a href="#contacto" class="hover:underline">Contacto</a>
-      <a href="login.html" class="hover:underline">Área Personal</a>
+<header class="bg-blue-800 text-white p-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <img src="assets/logo.png" alt="Logo Academia SEF" class="h-10 w-10 rounded-full bg-white" />
+      <h1 class="text-xl font-bold">Academia SEF</h1>
+    </div>
+    <nav>
+      <a href="#cursos" class="mx-2 hover:underline">Cursos</a>
+      <a href="#contacto" class="mx-2 hover:underline">Contacto</a>
+      <a href="#" class="mx-2 bg-white text-blue-800 font-semibold px-3 py-1 rounded hover:bg-blue-100">Área Personal</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main class="flex-grow container mx-auto px-4 py-8">
+<main class="flex-grow">
 
-    <!-- Carrusel de cursos -->
-    <section id="cursos" class="max-w-7xl mx-auto my-10 px-4">
-      <h2 class="text-3xl font-bold mb-6 text-center">Nuestros Cursos</h2>
-      <div id="cursos-carrusel" class="flex overflow-x-auto space-x-6 scrollbar-hide py-4">
-        <article class="min-w-[300px] bg-white rounded-lg shadow p-6 flex-shrink-0">
-          <h3 class="text-xl font-semibold mb-2">Seguridad Informática <span class="text-green-600 font-bold">GRATIS</span></h3>
-          <p class="text-gray-700 mb-4">
-            Aprende a proteger sistemas y redes de amenazas actuales. Curso financiado por el SEPE.
-          </p>
-          <ul class="text-sm mb-4 list-disc list-inside text-gray-600">
-            <li>Fundamentos de seguridad</li>
-            <li>Criptografía básica</li>
-            <li>Firewalls y antivirus</li>
-            <li>Buenas prácticas</li>
-          </ul>
-          <button onclick="mostrarInfoCurso('Curso gratuito financiado por el SEPE. Para inscribirte, envía documentación: DNI, Vida laboral o tarjeta de demandante. Se pide nombre, apellido, edad y población.', true)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Más información</button>
-        </article>
+  <!-- Cursos -->
+  <section id="cursos" class="container mx-auto p-6">
+    <!-- Aquí va el contenido de los cursos, puedes copiar el bloque HTML que quieras conservar -->
+  </section>
 
-        <article class="min-w-[300px] bg-white rounded-lg shadow p-6 flex-shrink-0">
-          <h3 class="text-xl font-semibold mb-2">Administración de Redes <span class="text-red-600 font-bold">€250</span></h3>
-          <p class="text-gray-700 mb-4">
-            Curso completo para configurar y administrar redes empresariales.
-          </p>
-          <ul class="text-sm mb-4 list-disc list-inside text-gray-600">
-            <li>Configuración de routers y switches</li>
-            <li>Protocolos de red</li>
-            <li>Monitorización</li>
-            <li>Resolución de problemas</li>
-          </ul>
-          <button onclick="mostrarInfoCurso('Curso de pago. Seleccione el método de pago al avanzar.')"
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Más información</button>
-          <button onclick="mostrarPago()" class="ml-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Pagar</button>
-        </article>
-
-        <article class="min-w-[300px] bg-white rounded-lg shadow p-6 flex-shrink-0">
-          <h3 class="text-xl font-semibold mb-2">Programación Web <span class="text-green-600 font-bold">GRATIS</span></h3>
-          <p class="text-gray-700 mb-4">
-            Aprende a crear páginas web modernas y dinámicas. Financiado por el SEPE.
-          </p>
-          <ul class="text-sm mb-4 list-disc list-inside text-gray-600">
-            <li>HTML5 y CSS3</li>
-            <li>JavaScript básico</li>
-            <li>Frameworks front-end</li>
-            <li>Publicación y hosting</li>
-          </ul>
-          <button onclick="mostrarInfoCurso('Curso gratuito financiado por el SEPE. Para inscribirte, envía documentación: DNI, Vida laboral o tarjeta de demandante. Se pide nombre, apellido, edad y población.', true)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Más información</button>
-        </article>
-
-        <!-- Puedes agregar más cursos similares aquí -->
-      </div>
-    </section>
-
-    <!-- Contacto -->
-    <section id="contacto" class="max-w-3xl mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h2 class="text-3xl font-bold mb-6 text-center">Contáctanos</h2>
-      <form id="form-contacto" action="https://docs.google.com/forms/d/e/1FAIpQLSeEXAMPLEFORMID/formResponse" method="POST" target="_blank" class="space-y-4" onsubmit="return validarFormularioContacto()">
-        <input name="entry.123456" type="text" placeholder="Nombre completo" required class="w-full border rounded p-2" />
-        <input name="entry.654321" type="email" placeholder="Correo electrónico" required class="w-full border rounded p-2" />
-        <textarea name="entry.111213" placeholder="Mensaje" required class="w-full border rounded p-2 h-24"></textarea>
-        <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded w-full hover:bg-blue-800 transition">Enviar</button>
-      </form>
-    </section>
-  </main>
-
-  <footer class="bg-gray-900 text-gray-200 p-6 mt-auto text-center">
-    <p>© 2025 Academia SEF. Todos los derechos reservados.</p>
-    <p>
-      Conoce cómo tratamos tus datos
-      <button onclick="toggleProteccionDatos()" class="underline text-blue-400 hover:text-blue-600 ml-1">Aquí</button>
-    </p>
-    <section id="proteccion-datos" class="mt-4 text-left max-w-4xl mx-auto text-sm bg-gray-800 p-4 rounded shadow">
-      <h3 class="font-semibold mb-2 text-lg">Protección de Datos Personales según LOPD y GDPR</h3>
-      <p>
-        En Academia SEF garantizamos la protección y privacidad de sus datos personales conforme a la Ley Orgánica de Protección de Datos (LOPD) y el Reglamento General de Protección de Datos (GDPR) de la Unión Europea.
-      </p>
-      <p>
-        Recopilamos únicamente la información necesaria para la gestión académica, administración de cursos, contacto y facturación. Los datos serán tratados con confidencialidad, almacenados en sistemas seguros y no serán cedidos a terceros sin consentimiento explícito.
-      </p>
-      <p>
-        Usted puede ejercer sus derechos de acceso, rectificación, cancelación y oposición (ARCO) en cualquier momento contactando con nosotros a través de los canales oficiales.
-      </p>
-      <p>
-        Esta política garantiza que cumplimos con los estándares legales y mejores prácticas para proteger su privacidad y garantizar la seguridad de su información.
-      </p>
-    </section>
-  </footer>
-
-  <div id="popup-curso" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded shadow max-w-lg w-full">
-      <div id="contenido-curso" class="mb-4 text-gray-800 leading-relaxed"></div>
+  <!-- Popups (Curso, Pago, Documentación) -->
+  <div id="popup-curso" class="popup hidden">
+    <div class="popup-content">
+      <div id="contenido-curso" class="mb-4 text-base text-gray-800 leading-relaxed"></div>
       <div class="flex justify-between">
-        <button onclick="cerrarPopupCurso()" class="bg-gray-600 text-white px-4 py-2 rounded">Cerrar</button>
-        <button id="boton-docs" onclick="mostrarDocs()" class="bg-blue-600 text-white px-4 py-2 rounded hidden">Enviar documentación</button>
+        <button onclick="cerrarPopupCurso()" class="btn btn-cerrar">Cerrar</button>
+        <button id="boton-docs" onclick="mostrarDocs()" class="btn btn-accion hidden">Enviar documentación</button>
       </div>
     </div>
   </div>
 
-  <div id="popup-docs" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded shadow max-w-lg w-full">
-      <h2 class="text-lg font-semibold mb-4">Enviar documentación</h2>
-      <p class="text-sm text-gray-700 mb-2">Debe adjuntar por correo electrónico:</p>
-      <ul class="list-disc text-sm text-gray-700 ml-6 mb-4">
-        <li>DNI escaneado o fotografía</li>
-        <li>Vida laboral o tarjeta de demandante de empleo</li>
-      </ul>
-      <form onsubmit="alert('Documentación enviada correctamente.'); cerrarDocs(); return false;">
-        <input type="text" required placeholder="Nombre" class="w-full border p-2 rounded mb-2" />
-        <input type="text" required placeholder="Apellido" class="w-full border p-2 rounded mb-2" />
-        <input type="number" required placeholder="Edad" class="w-full border p-2 rounded mb-2" />
-        <input type="text" required placeholder="Población" class="w-full border p-2 rounded mb-4" />
-        <div class="flex justify-between">
-          <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Enviar</button>
-          <button type="button" onclick="cerrarDocs()" class="bg-red-600 text-white px-4 py-2 rounded">Cancelar</button>
+  <div id="popup-pago" class="popup hidden">
+    <div class="popup-content">
+      <h3 class="text-xl mb-4">Selecciona método de pago</h3>
+      <form id="form-pago" onsubmit="validarPago(event)">
+        <div>
+          <label><input type="radio" name="metodo" value="tarjeta" onchange="seleccionarMetodo('tarjeta')" /> Tarjeta</label>
+          <label><input type="radio" name="metodo" value="bizum" onchange="seleccionarMetodo('bizum')" /> Bizum</label>
+        </div>
+        <div id="form-tarjeta" class="hidden mt-4">
+          <input type="text" placeholder="Número de tarjeta" required pattern="[0-9]{16}" />
+          <input type="text" placeholder="Fecha MM/AA" required pattern="(0[1-9]|1[0-2])\/?([0-9]{2})" />
+          <input type="text" placeholder="CVV" required pattern="[0-9]{3}" />
+        </div>
+        <div id="form-bizum" class="hidden mt-4">
+          <input type="text" placeholder="Número Bizum" required pattern="[0-9]{9}" />
+        </div>
+        <div class="mt-4 flex justify-between">
+          <button type="button" onclick="cerrarPago()" class="btn btn-cerrar">Cancelar</button>
+          <button type="submit" class="btn btn-accion">Pagar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div id="popup-pago" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded shadow max-w-md w-full">
-      <h2 class="text-xl font-semibold mb-4">Método de pago</h2>
-      <form id="form-pago" onsubmit="return validarPago(event)">
-        <div class="mb-4">
-          <label class="mr-4 font-semibold">Elija método:</label>
-          <label><input type="radio" name="metodo" value="tarjeta" onchange="seleccionarMetodo('tarjeta')" /> Tarjeta</label>
-          <label class="ml-4"><input type="radio" name="metodo" value="bizum" onchange="seleccionarMetodo('bizum')" /> Bizum</label>
-        </div>
-        <div id="form-tarjeta" class="hidden mb-4">
-          <input type="text" placeholder="Número de tarjeta" required pattern="[0-9]{16}" class="w-full border p-2 rounded mb-2" />
-          <input type="text" placeholder="Nombre en tarjeta" required class="w-full border p-2 rounded mb-2" />
-          <input type="text" placeholder="Fecha de expiración (MM/AA)" required pattern="^(0[1-9]|1[0-2])\/?([0-9]{2})$" class="w-full border p-2 rounded mb-2" />
-          <input type="text" placeholder="CVC" required pattern="[0-9]{3,4}" class="w-full border p-2 rounded" />
-        </div>
-        <div id="form-bizum" class="hidden mb-4">
-          <input type="tel" placeholder="Número de teléfono Bizum" required pattern="[0-9]{9}" class="w-full border p-2 rounded" />
-        </div>
-        <div class="flex justify-between">
-          <button type="
+  <div id="popup-docs" class="popup hidden">
+    <div class="popup-content">
+      <h3 class="text-xl mb-4">Enviar Documentación</h3>
+      <form action="https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXXXXXXXXX/formResponse" method="POST" target="_blank">
+        <input type="text" name="entry.123456" required placeholder="Nombre" class="mb-2" />
+        <input type="text" name="entry.654321" required placeholder="Apellido" class="mb-2" />
+        <input type="number" name="entry.111111" required placeholder="Edad" class="mb-2" />
+        <input type="text" name="entry.222222" required placeholder="Población" class="mb-2" />
+        <p class="mb-2">Documentación necesaria: DNI, Vida laboral o Tarjeta de demandante de empleo.</p>
+        <button type="submit" class="btn btn-accion">Enviar</button>
+        <button type="button" onclick="cerrarDocs()" class="btn btn-cerrar mt-2">Cerrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contacto -->
+  <section id="contacto" class="bg-white py-16 px-6 max-w-xl mx-auto text-center">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Contáctanos</h2>
+    <p class="text-sm mb-4 text-gray-700">¿Tienes dudas? Escríbenos y te responderemos lo antes posible.</p>
+    <form action="https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXXXXXXXXX/formResponse" method="POST" target="_blank">
+      <input type="text" name="entry.123456" required placeholder="Nombre completo" class="input-field" />
+      <input type="email" name="entry.654321" required placeholder="Correo electrónico" class="input-field" />
+      <textarea name="entry.112233" required placeholder="Tu mensaje" class="input-field textarea"></textarea>
+      <button type="submit" class="btn btn-accion">Enviar</button>
+    </form>
+  </section>
+
+</main>
+
+<footer class="bg-blue-900 text-white text-sm py-6">
+  <div class="container mx-auto px-6 flex justify-between items-center">
+    <p>&copy; 2025 Academia SEF - Todos los derechos reservados</p>
+    <button onclick="toggleProteccionDatos()" class="underline">Conoce cómo tratamos tus datos Aquí</button>
+  </div>
+</footer>
+
+<section id="proteccion-datos" class="bg-gray-100 text-sm text-gray-800 py-6 px-6 hidden">
+  <h3 class="text-lg font-bold mb-2">Política de Protección de Datos</h3>
+  <p>En Academia SEF tratamos sus datos de acuerdo con la Ley Orgánica 3/2018 (LOPDGDD) y el Reglamento General de Protección de Datos (RGPD) de la UE...</p>
+  <p>Solo recogemos los datos necesarios para los fines educativos, no compartimos información con terceros sin consentimiento y garantizamos derechos de acceso, rectificación, supresión, oposición y portabilidad. Nuestro equipo ha adoptado medidas técnicas y organizativas para asegurar la confidencialidad, integridad y disponibilidad de la información.</p>
+</section>
+
+</body>
+</html>
+
