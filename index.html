@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Academia SEF – Formación Profesional</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function abrirLogin() {
+      document.getElementById('loginModal').classList.remove('hidden');
+    }
+
+    function cerrarLogin() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function iniciarSesion(event) {
+      event.preventDefault();
+      const usuario = document.getElementById('usuario').value.trim();
+      const clave = document.getElementById('clave').value.trim();
+
+      if ((usuario === 'alumno' && clave === 'alumno') ||
+          (usuario === 'alumno2' && clave === 'alumno2') ||
+          (usuario === 'alumno3' && clave === 'alumno3')) {
+        window.location.href = 'alumno.html';
+      } else if (
+        (usuario === 'admin' && clave === 'admin') ||
+        (usuario === 'admin2' && clave === 'admin2')) {
+        window.location.href = 'admin.html';
+      } else {
+        alert('Credenciales incorrectas');
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+<header class="bg-blue-800 text-white p-4">
+  <div class="container mx-auto flex justify-between items-center">
+    <div class="flex items-center space-x-4">
+      <img src="https://dummyimage.com/40x40/ffffff/000000&text=A" alt="Logo" class="h-10 w-10 rounded-full bg-white">
+      <h1 class="text-xl font-bold">Academia SEF</h1>
+    </div>
+    <nav>
+      <a href="#cursos" class="mx-2 hover:underline">Cursos</a>
+      <a href="#contacto" class="mx-2 hover:underline">Contacto</a>
+      <button onclick="abrirLogin()" class="mx-2 bg-white text-blue-800 font-semibold px-3 py-1 rounded hover:bg-blue-100">Área Personal</button>
+    </nav>
+  </div>
+</header>
+
+<main class="flex-grow">
+  <section id="cursos" class="py-16 px-6 bg-white">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-10 text-blue-900">Nuestros Cursos</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div class="bg-gray-100 p-4 rounded shadow">Ciberseguridad Básica</div>
+        <div class="bg-gray-100 p-4 rounded shadow">Programación en Python</div>
+        <div class="bg-gray-100 p-4 rounded shadow">Análisis Forense Digital</div>
+        <div class="bg-gray-100 p-4 rounded shadow">Hacking Ético</div>
+        <div class="bg-gray-100 p-4 rounded shadow">Redes y Sistemas</div>
+        <div class="bg-gray-100 p-4 rounded shadow">Seguridad en Aplicaciones Web</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="bg-blue-50 py-16 px-6">
+    <div class="max-w-xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Contáctanos</h2>
+      <form action="#" method="POST">
+        <input type="text" required placeholder="Nombre completo" class="w-full border p-2 rounded mb-2">
+        <input type="email" required placeholder="Correo electrónico" class="w-full border p-2 rounded mb-2">
+        <textarea required placeholder="Tu mensaje" class="w-full border p-2 rounded mb-4"></textarea>
+        <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded">Enviar</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-blue-900 text-white text-sm py-6">
+  <div class="container mx-auto px-6 text-center">
+    <p>&copy; 2025 Academia SEF - Todos los derechos reservados</p>
+  </div>
+</footer>
+
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+    <h3 class="text-lg font-bold mb-4">Iniciar Sesión</h3>
+    <form onsubmit="iniciarSesion(event)">
+      <input type="text" id="usuario" placeholder="Usuario" required class="w-full border p-2 rounded mb-2">
+      <input type="password" id="clave" placeholder="Contraseña" required class="w-full border p-2 rounded mb-4">
+      <div class="flex justify-between">
+        <button type="button" onclick="cerrarLogin()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancelar</button>
+        <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">Entrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
