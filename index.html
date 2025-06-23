@@ -2,402 +2,599 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Academia SEF – Formación Profesional y Seguridad Informática</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Academia SEF - Formación Profesional</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    #proteccion-datos, #popup-curso, #popup-pago, #popup-docs {
-      display: none;
-    }
-    /* Popup fondo y centrado */
+    /* Popup base styles */
     .popup {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 20px;
     }
     .popup-content {
       background: white;
-      max-width: 600px;
-      width: 90%;
-      padding: 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      max-height: 80vh;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
       overflow-y: auto;
-      font-size: 1rem;
-      line-height: 1.5;
-      color: #1f2937;
-    }
-    /* Botón Área Personal más claro */
-    nav a.area-personal {
-      background: #ebf8ff;
-      color: #0c4a6e;
-      font-weight: 600;
-      padding: 0.3rem 0.8rem;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    nav a.area-personal:hover {
-      background: #bae6fd;
-    }
-    /* Estilo botón cursos */
-    .btn-primary {
-      background-color: #2563eb;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      transition: background-color 0.3s ease;
-    }
-    .btn-primary:hover {
-      background-color: #1e40af;
-    }
-
-    /* Diferenciación sección contacto */
-    #contacto {
-      background-color: #e0f2fe; /* azul muy claro */
-      border-radius: 12px;
-      padding: 2rem 1.5rem;
-      margin-top: 5rem;
-      box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+      padding: 20px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.3);
     }
   </style>
   <script>
-    // Toggle LOPD
-    function toggleProteccionDatos() {
-      const sec = document.getElementById('proteccion-datos');
-      if (sec.style.display === 'block') {
-        sec.style.display = 'none';
-      } else {
-        sec.style.display = 'block';
-        sec.scrollIntoView({behavior: 'smooth'});
+    // --- Datos Usuarios ---
+    const users = {
+      alumno1: { password: 'alumno', type: 'alumno', name: 'Juan Pérez' },
+      alumno2: { password: 'alumno', type: 'alumno', name: 'María García' },
+      alumno3: { password: 'alumno', type: 'alumno', name: 'Carlos Martínez' },
+      admin1: { password: 'admin', type: 'admin', name: 'Admin One' },
+      admin2: { password: 'admin', type: 'admin', name: 'Admin Two' }
+    };
+
+    // --- Cursos disponibles ---
+    const cursos = [
+      {id:'seguridad', nombre:'Seguridad Informática', costo: 300},
+      {id:'atencion-cliente', nombre:'Atención al Cliente', costo: 0},
+      {id:'administracion', nombre:'Administración y Gestión', costo: 0},
+      {id:'marketing-digital', nombre:'Marketing Digital', costo: 0},
+      {id:'programacion-web', nombre:'Programación Web', costo: 0},
+      {id:'excel-avanzado', nombre:'Excel Avanzado', costo: 0}
+    ];
+
+    // --- Datos de alumnos (inscripciones, pagos, etc) ---
+    // Para cada alumno, datos simulados:
+    const datosAlumnos = {
+      alumno1: {
+        cursosInscritos: ['seguridad', 'programacion-web'],
+        pagos: [{curso:'seguridad', fecha:'2025-05-01', monto:300}],
+        asistencia: { 'seguridad': 85, 'programacion-web': 92 }, // % asistencia
+        examenes: { 'seguridad': ['Examen 1: Aprobado', 'Examen 2: Pendiente'], 'programacion-web': ['Examen Final: Aprobado'] },
+        tareas: { 'seguridad': 5, 'programacion-web': 7 }, // tareas entregadas
+      },
+      alumno2: {
+        cursosInscritos: ['atencion-cliente', 'marketing-digital'],
+        pagos: [],
+        asistencia: { 'atencion-cliente': 90, 'marketing-digital': 88 },
+        examenes: { 'atencion-cliente': ['Examen Final: Aprobado'], 'marketing-digital': ['Examen 1: Aprobado', 'Examen Final: Aprobado'] },
+        tareas: { 'atencion-cliente': 3, 'marketing-digital': 6 },
+      },
+      alumno3: {
+        cursosInscritos: ['administracion', 'excel-avanzado'],
+        pagos: [],
+        asistencia: { 'administracion': 78, 'excel-avanzado': 80 },
+        examenes: { 'administracion': ['Examen Final: Pendiente'], 'excel-avanzado': ['Examen 1: Aprobado'] },
+        tareas: { 'administracion': 4, 'excel-avanzado': 5 },
+      }
+    };
+
+    // Usuario logueado actual
+    let usuarioActual = null;
+
+    // --- Funciones ---
+
+    function abrirLogin() {
+      document.getElementById('popup-login').style.display = 'flex';
+      document.getElementById('login-usuario').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-error').textContent = '';
+    }
+    function cerrarLogin() {
+      document.getElementById('popup-login').style.display = 'none';
+    }
+
+    function login(event) {
+      event.preventDefault();
+      const user = document.getElementById('login-usuario').value.trim();
+      const pass = document.getElementById('login-password').value.trim();
+
+      if(!users[user] || users[user].password !== pass) {
+        document.getElementById('login-error').textContent = 'Usuario o contraseña incorrectos';
+        return;
+      }
+
+      usuarioActual = { username: user, ...users[user] };
+      cerrarLogin();
+      mostrarAreaPersonal();
+    }
+
+    // Mostrar área personal según tipo usuario
+    function mostrarAreaPersonal() {
+      if(!usuarioActual) return;
+
+      // Ocultar secciones principales
+      document.getElementById('inicio').style.display = 'none';
+      document.getElementById('cursos').style.display = 'none';
+      document.getElementById('contacto').style.display = 'none';
+
+      // Mostrar contenido área personal
+      if(usuarioActual.type === 'alumno') {
+        mostrarAreaAlumno();
+      } else if(usuarioActual.type === 'admin') {
+        mostrarAreaAdmin();
       }
     }
 
-    // Mostrar popup curso
-    function mostrarInfoCurso(id) {
-      const cursos = {
-        'seguridad': `
-          <h2 class="text-xl font-bold mb-2">Curso de Seguridad Informática</h2>
-          <p>Aprende los fundamentos y herramientas para proteger sistemas y redes.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>Conceptos básicos de seguridad</li>
-            <li>Criptografía y autenticación</li>
-            <li>Protección contra ataques comunes</li>
-            <li>Normativas y cumplimiento</li>
-          </ul>
-          <p class="mt-3 font-semibold text-red-600">Costo: 300€</p>
-          <button class="btn-primary mt-4" onclick="mostrarPago()">Pagar curso</button>
-        `,
-        'atencion-cliente': `
-          <h2 class="text-xl font-bold mb-2">Curso de Atención al Cliente</h2>
-          <p>Desarrolla habilidades para una atención efectiva y profesional.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>Comunicación verbal y no verbal</li>
-            <li>Gestión de quejas y conflictos</li>
-            <li>Fidelización y satisfacción</li>
-            <li>Herramientas digitales de atención</li>
-          </ul>
-          <p class="mt-3 font-semibold text-green-600">GRATIS - Financiado por el SEPE</p>
-          <button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar documentación</button>
-        `,
-        'administracion': `
-          <h2 class="text-xl font-bold mb-2">Curso de Administración y Gestión</h2>
-          <p>Aprende a manejar procesos administrativos y contables básicos.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>Documentación administrativa</li>
-            <li>Contabilidad básica</li>
-            <li>Herramientas ofimáticas</li>
-            <li>Gestión de recursos humanos</li>
-          </ul>
-          <p class="mt-3 font-semibold text-green-600">GRATIS - Financiado por el SEPE</p>
-          <button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar documentación</button>
-        `,
-        'marketing-digital': `
-          <h2 class="text-xl font-bold mb-2">Curso de Marketing Digital</h2>
-          <p>Conoce las estrategias y herramientas para posicionar negocios online.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>SEO y SEM</li>
-            <li>Redes sociales</li>
-            <li>Email marketing</li>
-            <li>Analítica web</li>
-          </ul>
-          <p class="mt-3 font-semibold text-green-600">GRATIS - Financiado por el SEPE</p>
-          <button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar documentación</button>
-        `,
-        'programacion-web': `
-          <h2 class="text-xl font-bold mb-2">Curso de Programación Web</h2>
-          <p>Aprende a desarrollar páginas y aplicaciones web modernas.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>HTML5 y CSS3</li>
-            <li>JavaScript y frameworks</li>
-            <li>Desarrollo responsive</li>
-            <li>Publicación y hosting</li>
-          </ul>
-          <p class="mt-3 font-semibold text-green-600">GRATIS - Financiado por el SEPE</p>
-          <button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar documentación</button>
-        `,
-        'excel-avanzado': `
-          <h2 class="text-xl font-bold mb-2">Curso de Excel Avanzado</h2>
-          <p>Domina funciones y herramientas avanzadas de Excel para análisis de datos.</p>
-          <h3 class="font-semibold mt-4">Mini temario:</h3>
-          <ul class="list-disc ml-5">
-            <li>Funciones avanzadas</li>
-            <li>Tablas dinámicas</li>
-            <li>Macros y VBA</li>
-            <li>Visualización de datos</li>
-          </ul>
-          <p class="mt-3 font-semibold text-green-600">GRATIS - Financiado por el SEPE</p>
-          <button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar documentación</button>
-        `
-      };
-      document.getElementById('contenido-curso').innerHTML = cursos[id];
-      document.getElementById('popup-curso').style.display = 'flex';
-      // Mostrar botón docs solo en gratuitos:
-      if(id === 'seguridad'){
-        document.getElementById('boton-docs').style.display = 'none';
+    // Mostrar datos alumno
+    function mostrarAreaAlumno() {
+      const cont = document.getElementById('area-personal');
+      cont.innerHTML = '';
+
+      const data = datosAlumnos[usuarioActual.username];
+      const nombre = usuarioActual.name;
+
+      // Título
+      const h2 = document.createElement('h2');
+      h2.textContent = `Área Personal - Alumno: ${nombre}`;
+      h2.className = 'text-3xl font-bold mb-6 text-blue-900';
+      cont.appendChild(h2);
+
+      // Cursos inscritos
+      const cursosInscritos = data.cursosInscritos.map(cid => cursos.find(c => c.id === cid));
+      let htmlCursos = '<h3 class="text-xl font-semibold mb-2">Cursos Inscritos</h3><ul class="list-disc ml-6 mb-4">';
+      cursosInscritos.forEach(c => {
+        htmlCursos += `<li>${c.nombre} ${c.costo > 0 ? `(Pago: ${c.costo} €)` : '(Gratuito)'}</li>`;
+      });
+      htmlCursos += '</ul>';
+      cont.insertAdjacentHTML('beforeend', htmlCursos);
+
+      // Pagos realizados
+      let pagosHTML = '<h3 class="text-xl font-semibold mb-2">Pagos Realizados</h3>';
+      if(data.pagos.length === 0) {
+        pagosHTML += '<p>No se han registrado pagos.</p>';
       } else {
-        document.getElementById('boton-docs').style.display = 'inline-block';
+        pagosHTML += '<ul class="list-disc ml-6 mb-4">';
+        data.pagos.forEach(p => {
+          const c = cursos.find(cu => cu.id === p.curso);
+          pagosHTML += `<li>${c.nombre}: ${p.monto} € (Fecha: ${p.fecha})</li>`;
+        });
+        pagosHTML += '</ul>';
       }
+      cont.insertAdjacentHTML('beforeend', pagosHTML);
+
+      // Asistencia
+      let asistenciaHTML = '<h3 class="text-xl font-semibold mb-2">Asistencia (%)</h3><ul class="list-disc ml-6 mb-4">';
+      Object.entries(data.asistencia).forEach(([cid, perc]) => {
+        const c = cursos.find(cu => cu.id === cid);
+        asistenciaHTML += `<li>${c.nombre}: ${perc}%</li>`;
+      });
+      asistenciaHTML += '</ul>';
+      cont.insertAdjacentHTML('beforeend', asistenciaHTML);
+
+      // Exámenes realizados
+      let examenesHTML = '<h3 class="text-xl font-semibold mb-2">Exámenes</h3>';
+      Object.entries(data.examenes).forEach(([cid, examenes]) => {
+        const c = cursos.find(cu => cu.id === cid);
+        examenesHTML += `<strong>${c.nombre}:</strong><ul class="list-disc ml-8 mb-4">`;
+        examenes.forEach(e => examenesHTML += `<li>${e}</li>`);
+        examenesHTML += '</ul>';
+      });
+      cont.insertAdjacentHTML('beforeend', examenesHTML);
+
+      // Tareas entregadas
+      let tareasHTML = '<h3 class="text-xl font-semibold mb-2">Tareas Entregadas</h3><ul class="list-disc ml-6 mb-4">';
+      Object.entries(data.tareas).forEach(([cid, tareas]) => {
+        const c = cursos.find(cu => cu.id === cid);
+        tareasHTML += `<li>${c.nombre}: ${tareas} tareas</li>`;
+      });
+      tareasHTML += '</ul>';
+      cont.insertAdjacentHTML('beforeend', tareasHTML);
+
+      // Botón para cerrar sesión
+      const btnLogout = document.createElement('button');
+      btnLogout.textContent = 'Cerrar Sesión';
+      btnLogout.className = 'btn-primary mt-6';
+      btnLogout.onclick = () => {
+        usuarioActual = null;
+        recargarPagina();
+      };
+      cont.appendChild(btnLogout);
+
+      cont.style.display = 'block';
+      document.getElementById('area-admin').style.display = 'none';
+    }
+
+    // Mostrar datos admin
+    function mostrarAreaAdmin() {
+      const cont = document.getElementById('area-admin');
+      cont.innerHTML = '';
+
+      const nombre = usuarioActual.name;
+      const h2 = document.createElement('h2');
+      h2.textContent = `Área Personal - Admin: ${nombre}`;
+      h2.className = 'text-3xl font-bold mb-6 text-blue-900';
+      cont.appendChild(h2);
+
+      // Mostrar tabla con todos los alumnos y resumen info
+      const tabla = document.createElement('table');
+      tabla.className = 'table-auto w-full border-collapse border border-gray-300 mb-6';
+      tabla.innerHTML = `
+        <thead>
+          <tr class="bg-blue-100">
+            <th class="border border-gray-300 px-3 py-2 text-left">Alumno</th>
+            <th class="border border-gray-300 px-3 py-2 text-left">Cursos Inscritos</th>
+            <th class="border border-gray-300 px-3 py-2 text-left">Pagos</th>
+            <th class="border border-gray-300 px-3 py-2 text-left">Asistencia (%)</th>
+            <th class="border border-gray-300 px-3 py-2 text-left">Exámenes</th>
+            <th class="border border-gray-300 px-3 py-2 text-left">Tareas Entregadas</th>
+          </tr>
+        </thead>
+      `;
+
+      const tbody = document.createElement('tbody');
+      for (const [username, datos] of Object.entries(datosAlumnos)) {
+        const alumnoName = users[username].name;
+        const cursosInscritos = datos.cursosInscritos.map(cid => cursos.find(c => c.id === cid).nombre).join(', ');
+        const pagos = datos.pagos.length ? datos.pagos.map(p => `${cursos.find(c => c.id === p.curso).nombre} (${p.monto} €)`).join('; ') : 'Ninguno';
+        const asistencia = Object.entries(datos.asistencia).map(([cid, val]) => `${cursos.find(c => c.id === cid).nombre}: ${val}%`).join('; ');
+        const examenes = Object.entries(datos.examenes).map(([cid, exams]) => {
+          const cName = cursos.find(c => c.id === cid).nombre;
+          return `${cName}: ${exams.join(', ')}`;
+        }).join('; ');
+        const tareas = Object.entries(datos.tareas).map(([cid, val]) => `${cursos.find(c => c.id === cid).nombre}: ${val}`).join('; ');
+
+        const tr = document.createElement('tr');
+        tr.className = 'border border-gray-300 hover:bg-blue-50';
+        tr.innerHTML = `
+          <td class="border border-gray-300 px-3 py-2">${alumnoName}</td>
+          <td class="border border-gray-300 px-3 py-2">${cursosInscritos}</td>
+          <td class="border border-gray-300 px-3 py-2">${pagos}</td>
+          <td class="border border-gray-300 px-3 py-2">${asistencia}</td>
+          <td class="border border-gray-300 px-3 py-2">${examenes}</td>
+          <td class="border border-gray-300 px-3 py-2">${tareas}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+      tabla.appendChild(tbody);
+      cont.appendChild(tabla);
+
+      // Botón para abrir formulario de contactos (simula ir a sección contacto)
+      const btnFormContactos = document.createElement('button');
+      btnFormContactos.textContent = 'Ir a formulario de Contactos';
+      btnFormContactos.className = 'btn-primary mb-4';
+      btnFormContactos.onclick = () => {
+        alert('Este botón redirige al formulario de contactos.');
+        // Aquí podrías hacer scroll o abrir la sección de contacto
+        window.scrollTo({top: document.getElementById('contacto').offsetTop, behavior: 'smooth'});
+      };
+      cont.appendChild(btnFormContactos);
+
+      // Estadísticas rápidas
+      const totalAlumnos = Object.keys(datosAlumnos).length;
+      const totalCursosInscritos = Object.values(datosAlumnos).reduce((acc, d) => acc + d.cursosInscritos.length, 0);
+      const stats = document.createElement('p');
+      stats.className = 'mb-4 text-gray-700';
+      stats.textContent = `Total alumnos registrados: ${totalAlumnos}. Total inscripciones a cursos: ${totalCursosInscritos}.`;
+      cont.insertBefore(stats, tabla);
+
+      // Botón cerrar sesión
+      const btnLogout = document.createElement('button');
+      btnLogout.textContent = 'Cerrar Sesión';
+      btnLogout.className = 'btn-primary';
+      btnLogout.onclick = () => {
+        usuarioActual = null;
+        recargarPagina();
+      };
+      cont.appendChild(btnLogout);
+
+      cont.style.display = 'block';
+      document.getElementById('area-personal').style.display = 'none';
+    }
+
+    // Recargar página y mostrar secciones normales
+    function recargarPagina() {
+      document.getElementById('inicio').style.display = 'block';
+      document.getElementById('cursos').style.display = 'block';
+      document.getElementById('contacto').style.display = 'block';
+      document.getElementById('area-personal').style.display = 'none';
+      document.getElementById('area-admin').style.display = 'none';
+    }
+
+    // Eventos navbar
+    function initNavbar() {
+      document.querySelector('.area-personal').addEventListener('click', (e) => {
+        e.preventDefault();
+        abrirLogin();
+      });
+    }
+
+    // Cursos info popup (se mantiene el que tenías)
+    function mostrarInfoCurso(id) {
+      const curso = cursos.find(c => c.id === id);
+      const contenido = document.getElementById('contenido-curso');
+      let texto = `<h3 class="text-2xl font-bold mb-4">${curso.nombre}</h3>`;
+      if(curso.costo > 0) {
+        texto += `<p>Curso pago con costo de ${curso.costo}€.</p>`;
+        texto += `<p>Aprende a proteger sistemas y redes con prácticas actualizadas.</p>`;
+        texto += `<button class="btn-primary mt-4" onclick="abrirPago()">Pagar Curso</button>`;
+      } else {
+        texto += `<p>Curso gratuito financiado por el SEPE.</p>`;
+        texto += `<p>Envía tu documentación para inscribirte en este curso.</p>`;
+        texto += `<button class="btn-primary mt-4" onclick="mostrarDocs()">Enviar Documentación</button>`;
+      }
+      document.getElementById('popup-curso').style.display = 'flex';
+      contenido.innerHTML = texto;
     }
     function cerrarPopupCurso() {
       document.getElementById('popup-curso').style.display = 'none';
-      cerrarPago();
-      cerrarDocs();
     }
 
-    // Mostrar popup pago
-    function mostrarPago() {
+    // Pago (mantener)
+    let metodoPagoSeleccionado = null;
+    function abrirPago() {
       document.getElementById('popup-pago').style.display = 'flex';
-      // Reset forms y selección
-      document.getElementById('form-tarjeta').style.display = 'none';
-      document.getElementById('form-bizum').style.display = 'none';
-      const radios = document.querySelectorAll('input[name="metodo"]');
-      radios.forEach(r => r.checked = false);
       document.getElementById('mensaje-pago').style.display = 'none';
       document.getElementById('boton-pagar').disabled = false;
+      metodoPagoSeleccionado = null;
+      document.querySelectorAll('input[name="metodo"]').forEach(el => el.checked = false);
+      document.getElementById('form-tarjeta').style.display = 'none';
+    }
+    function seleccionarMetodo(metodo) {
+      metodoPagoSeleccionado = metodo;
+      if(metodo === 'tarjeta') {
+        document.getElementById('form-tarjeta').style.display = 'block';
+      } else {
+        document.getElementById('form-tarjeta').style.display = 'none';
+      }
+    }
+    function pagar() {
+      // Validar selección
+      if(!metodoPagoSeleccionado) {
+        alert('Selecciona un método de pago');
+        return;
+      }
+      if(metodoPagoSeleccionado === 'tarjeta') {
+        // Validar datos tarjeta (simplificado)
+        const num = document.getElementById('num-tarjeta').value.trim();
+        const fecha = document.getElementById('fecha-exp').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+        if(num.length < 13 || fecha.length < 5 || cvv.length < 3) {
+          alert('Datos de tarjeta incompletos o inválidos');
+          return;
+        }
+      }
+      document.getElementById('boton-pagar').disabled = true;
+      document.getElementById('mensaje-pago').style.display = 'block';
+      document.getElementById('mensaje-pago').textContent = 'Pago realizado con éxito. Gracias.';
     }
     function cerrarPago() {
       document.getElementById('popup-pago').style.display = 'none';
     }
-    // Seleccionar método de pago
-    function seleccionarMetodo(metodo) {
-      document.getElementById('form-tarjeta').style.display = metodo === 'tarjeta' ? 'block' : 'none';
-      document.getElementById('form-bizum').style.display = metodo === 'bizum' ? 'block' : 'none';
-      document.getElementById('mensaje-pago').style.display = 'none';
-      document.getElementById('boton-pagar').disabled = false;
-    }
-    // Validar pago (solo simulado)
-    function validarPago(event) {
-      event.preventDefault();
-      const metodo = document.querySelector('input[name="metodo"]:checked');
-      if (!metodo) {
-        alert('Por favor, seleccione un método de pago.');
-        return;
-      }
-      // Validar campos según método
-      if(metodo.value === 'tarjeta'){
-        const tarjeta = document.getElementById('numero-tarjeta').value.trim();
-        const cvv = document.getElementById('cvv').value.trim();
-        const fecha = document.getElementById('fecha-exp').value.trim();
-        if(!/^\d{16}$/.test(tarjeta)){
-          alert('Número de tarjeta inválido.');
-          return;
-        }
-        if(!/^\d{3,4}$/.test(cvv)){
-          alert('CVV inválido.');
-          return;
-        }
-        if(!/^\d{2}\/\d{2}$/.test(fecha)){
-          alert('Fecha de expiración inválida. Formato MM/AA');
-          return;
-        }
-      }
-      if(metodo.value === 'bizum'){
-        const telefono = document.getElementById('telefono-bizum').value.trim();
-        if(!/^\d{9}$/.test(telefono)){
-          alert('Número de teléfono Bizum inválido.');
-          return;
-        }
-      }
-      // Mostrar mensaje de pago exitoso
-      document.getElementById('mensaje-pago').style.display = 'block';
-      document.getElementById('boton-pagar').disabled = true;
+
+    // Enviar documentación (mantener)
+    function mostrarDocs() {
+      alert('Se ha enviado la documentación. Nos pondremos en contacto pronto.');
     }
 
-    function mostrarDocs() {
-      document.getElementById('popup-docs').style.display = 'flex';
+    // Enviar contacto
+    function enviarContacto(event) {
+      event.preventDefault();
+      const nombre = document.getElementById('nombre-contacto').value.trim();
+      const email = document.getElementById('email-contacto').value.trim();
+      const mensaje = document.getElementById('mensaje-contacto').value.trim();
+
+      if(!nombre || !email || !mensaje) {
+        alert('Completa todos los campos.');
+        return;
+      }
+      alert('Gracias por contactarnos. Responderemos pronto.');
+      document.getElementById('form-contacto').reset();
     }
-    function cerrarDocs() {
-      document.getElementById('popup-docs').style.display = 'none';
+
+    window.onload = () => {
+      initNavbar();
+      recargarPagina();
     }
   </script>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
-  <!-- Header / Navegación -->
-  <header class="bg-white shadow sticky top-0 z-30">
-    <nav class="container mx-auto flex justify-between items-center py-4 px-6 md:px-0">
-      <a href="#" class="font-bold text-xl text-blue-700">Academia SEF</a>
-      <ul class="flex gap-6 items-center text-blue-800 font-semibold">
-        <li><a href="#inicio" class="hover:text-blue-600">Inicio</a></li>
-        <li><a href="#cursos" class="hover:text-blue-600">Cursos</a></li>
-        <li><a href="#contacto" class="hover:text-blue-600">Contacto</a></li>
-        <li><a href="https://area-personal.academia-sef.com" class="area-personal" target="_blank" rel="noopener noreferrer">Área Personal</a></li>
-      </ul>
-    </nav>
-  </header>
+  <!-- Navbar -->
+  <nav class="bg-blue-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow">
+    <a href="#" class="text-2xl font-bold hover:text-gray-300">Academia SEF</a>
+    <ul class="flex space-x-6 text-lg">
+      <li><a href="#" onclick="recargarPagina()">Inicio</a></li>
+      <li><a href="#" onclick="document.getElementById('cursos').scrollIntoView({behavior:'smooth'})">Cursos</a></li>
+      <li><a href="#" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contacto</a></li>
+      <li><a href="#" class="area-personal hover:underline cursor-pointer">Área Personal</a></li>
+    </ul>
+  </nav>
 
   <!-- Sección Inicio -->
-  <section id="inicio" class="container mx-auto px-6 pt-12 flex flex-col items-center text-center max-w-3xl">
-    <h1 class="text-4xl font-extrabold mb-4 text-blue-900">Formación Profesional en Seguridad Informática</h1>
-    <p class="mb-6 text-lg text-gray-700">Cursos presenciales y online financiados por el SEPE y también cursos de pago para ampliar tus conocimientos.</p>
-    <button class="btn-primary px-6 py-3 rounded" onclick="document.getElementById('cursos').scrollIntoView({behavior:'smooth'})">Ver Cursos</button>
+  <section id="inicio" class="p-10 max-w-6xl mx-auto">
+    <h1 class="text-4xl font-bold mb-6 text-blue-900">Bienvenido a la Academia SEF</h1>
+    <p class="mb-4">Ofrecemos formación profesional de alta calidad para todos los niveles.</p>
+    <p>El SEF financia algunos cursos y apoyamos la formación continua para mejorar tu carrera.</p>
   </section>
 
   <!-- Sección Cursos -->
-  <section id="cursos" class="container mx-auto px-6 mt-16 mb-12 max-w-7xl">
-    <h2 class="text-3xl font-bold mb-8 text-center text-blue-900">Nuestros Cursos</h2>
-    <div class="flex flex-wrap justify-center gap-8">
-      
-      <!-- Curso 1: Seguridad Informática (pago) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-blue-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('seguridad')">
+  <section id="cursos" class="p-10 max-w-6xl mx-auto bg-white rounded shadow mb-10">
+    <h2 class="text-3xl font-bold mb-6 text-blue-900">Nuestros Cursos</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Curso 1 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('seguridad')">
         <h3 class="text-xl font-semibold mb-2">Seguridad Informática</h3>
-        <p>Curso pago: aprende a proteger sistemas y redes.</p>
-        <p class="mt-2 font-bold text-red-600">Costo: 300€</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('seguridad'); event.stopPropagation()">Más información</button>
-      </article>
-
-      <!-- Curso 2: Atención al Cliente (gratis) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('atencion-cliente')">
+        <p>Curso pago: 300€</p>
+      </div>
+      <!-- Curso 2 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('atencion-cliente')">
         <h3 class="text-xl font-semibold mb-2">Atención al Cliente</h3>
-        <p>Curso gratuito financiado por el SEPE.</p>
-        <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('atencion-cliente'); event.stopPropagation()">Más información</button>
-      </article>
-
-      <!-- Curso 3: Administración y Gestión (gratis) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('administracion')">
+        <p>Curso gratuito financiado</p>
+      </div>
+      <!-- Curso 3 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('administracion')">
         <h3 class="text-xl font-semibold mb-2">Administración y Gestión</h3>
-        <p>Curso gratuito financiado por el SEPE.</p>
-        <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('administracion'); event.stopPropagation()">Más información</button>
-      </article>
-
-      <!-- Curso 4: Marketing Digital (gratis) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('marketing-digital')">
+        <p>Curso gratuito financiado</p>
+      </div>
+      <!-- Curso 4 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('marketing-digital')">
         <h3 class="text-xl font-semibold mb-2">Marketing Digital</h3>
-        <p>Curso gratuito financiado por el SEPE.</p>
-        <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('marketing-digital'); event.stopPropagation()">Más información</button>
-      </article>
-
-      <!-- Curso 5: Programación Web (gratis) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('programacion-web')">
+        <p>Curso gratuito financiado</p>
+      </div>
+      <!-- Curso 5 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('programacion-web')">
         <h3 class="text-xl font-semibold mb-2">Programación Web</h3>
-        <p>Curso gratuito financiado por el SEPE.</p>
-        <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('programacion-web'); event.stopPropagation()">Más información</button>
-      </article>
-
-      <!-- Curso 6: Excel Avanzado (gratis) -->
-      <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('excel-avanzado')">
+        <p>Curso gratuito financiado</p>
+      </div>
+      <!-- Curso 6 -->
+      <div class="border rounded p-4 shadow hover:shadow-lg cursor-pointer" onclick="mostrarInfoCurso('excel-avanzado')">
         <h3 class="text-xl font-semibold mb-2">Excel Avanzado</h3>
-        <p>Curso gratuito financiado por el SEPE.</p>
-        <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
-        <button class="btn-primary mt-4" onclick="mostrarInfoCurso('excel-avanzado'); event.stopPropagation()">Más información</button>
-      </article>
-
+        <p>Curso gratuito financiado</p>
+      </div>
     </div>
   </section>
 
-  <!-- Popup Curso -->
-  <div id="popup-curso" class="popup" onclick="cerrarPopupCurso()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-      <div id="contenido-curso"></div>
-      <button onclick="cerrarPopupCurso()" class="btn-primary mt-6">Cerrar</button>
-    </div>
-  </div>
-
-  <!-- Popup Pago -->
-  <div id="popup-pago" class="popup" onclick="cerrarPago()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-      <h2 class="text-xl font-bold mb-4">Opciones de Pago</h2>
-      <form id="form-pago" onsubmit="validarPago(event)">
-        <div class="mb-4">
-          <label class="inline-flex items-center mr-6">
-            <input type="radio" name="metodo" value="tarjeta" onchange="seleccionarMetodo('tarjeta')" />
-            <span class="ml-2">Tarjeta de Crédito/Débito</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input type="radio" name="metodo" value="bizum" onchange="seleccionarMetodo('bizum')" />
-            <span class="ml-2">Bizum</span>
-          </label>
-        </div>
-
-        <div id="form-tarjeta" class="mb-4" style="display:none;">
-          <input type="text" id="numero-tarjeta" placeholder="Número de tarjeta (16 dígitos)" class="border p-2 rounded w-full mb-2" maxlength="16" />
-          <input type="text" id="fecha-exp" placeholder="Fecha expiración MM/AA" class="border p-2 rounded w-full mb-2" maxlength="5" />
-          <input type="text" id="cvv" placeholder="CVV" class="border p-2 rounded w-full" maxlength="4" />
-        </div>
-
-        <div id="form-bizum" class="mb-4" style="display:none;">
-          <input type="tel" id="telefono-bizum" placeholder="Número de teléfono (9 dígitos)" class="border p-2 rounded w-full" maxlength="9" />
-        </div>
-
-        <p id="mensaje-pago" class="text-green-600 font-semibold mb-4" style="display:none;">Pago simulado realizado con éxito.</p>
-
-        <button id="boton-pagar" type="submit" class="btn-primary w-full py-3 font-semibold">Pagar</button>
-      </form>
-      <button onclick="cerrarPago()" class="btn-primary mt-4 w-full">Cancelar</button>
-    </div>
-  </div>
-
-  <!-- Popup Documentación -->
-  <div id="popup-docs" class="popup" onclick="cerrarDocs()">
-    <div class="popup-content" onclick="event.stopPropagation()">
-      <h2 class="text-xl font-bold mb-4">Enviar Documentación</h2>
-      <p>Para inscribirte en este curso gratuito financiado por el SEPE, por favor envía tu documentación a nuestro correo o mediante el formulario que te enviaremos.</p>
-      <ul class="list-disc ml-6 mt-2 mb-6">
-        <li>DNI o NIE</li>
-        <li>Currículum Vitae actualizado</li>
-        <li>Certificados académicos</li>
-      </ul>
-      <p>También puedes contactarnos para cualquier duda.</p>
-      <button onclick="cerrarDocs()" class="btn-primary mt-6 w-full">Cerrar</button>
-    </div>
-  </div>
-
   <!-- Sección Contacto -->
-  <section id="contacto" class="container mx-auto px-6 max-w-xl">
-    <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">Contáctanos</h2>
-    <p class="text-center mb-6 text-blue-700">¿Tienes dudas? Escríbenos y te responderemos lo antes posible.</p>
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXXXXXXXXX/formResponse" method="POST" target="_blank" class="space-y-4">
-      <input type="text" name="entry.123456" required placeholder="Nombre completo" class="w-full border border-blue-300 p-3 rounded" />
-      <input type="email" name="entry.654321" required placeholder="Correo electrónico" class="w-full border border-blue-300 p-3 rounded" />
-      <textarea name="entry.112233" required placeholder="Tu mensaje" rows="5" class="w-full border border-blue-300 p-3 rounded resize-none"></textarea>
-      <button type="submit" class="btn-primary w-full py-3 text-center font-semibold">Enviar</button>
+  <section id="contacto" class="p-10 max-w-4xl mx-auto bg-white rounded shadow mb-10">
+    <h2 class="text-3xl font-bold mb-6 text-blue-900">Contacto</h2>
+    <form id="form-contacto" onsubmit="enviarContacto(event)" class="space-y-4">
+      <div>
+        <label for="nombre-contacto" class="block font-semibold mb-1">Nombre:</label>
+        <input type="text" id="nombre-contacto" name="nombre" required class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="email-contacto" class="block font-semibold mb-1">Email:</label>
+        <input type="email" id="email-contacto" name="email" required class="w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label for="mensaje-contacto" class="block font-semibold mb-1">Mensaje:</label>
+        <textarea id="mensaje-contacto" name="mensaje" required class="w-full border rounded px-3 py-2" rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn-primary">Enviar</button>
     </form>
   </section>
 
-  <!-- LOPD / Privacidad -->
-  <footer class="container mx-auto px-6 py-6 mt-16 text-center text-gray-600 text-sm">
-    <button class="underline hover:text-blue-800" onclick="toggleProteccionDatos()">Aviso de Privacidad y Protección de Datos</button>
-    <div id="proteccion-datos" class="mt-4 max-w-3xl mx-auto text-left bg-white p-6 rounded shadow">
-      <h3 class="font-bold mb-2 text-blue-900">Aviso de Privacidad y Protección de Datos</h3>
-      <p>En Academia SEF respetamos tu privacidad y protegemos tus datos personales conforme a la normativa vigente.</p>
-      <p>Los datos recogidos serán utilizados exclusivamente para la gestión de tus solicitudes y cursos.</p>
-      <p>Para más información, consulta nuestra <a href="#" class="text-blue-700 underline">Política de Privacidad</a>.</p>
-    </div>
-  </footer>
+  <!-- Área Personal Alumno -->
+  <section id="area-personal" class="p-10 max-w-6xl mx-auto bg-white rounded shadow mb-10" style="display:none;"></section>
 
+  <!-- Área Personal Admin -->
+  <section id="area-admin" class="p-10 max-w-7xl mx-auto bg-white rounded shadow mb-10 overflow-x-auto" style="display:none;"></section>
+
+  <!-- Popup Login -->
+  <div id="popup-login" class="popup" onclick="if(event.target === this) cerrarLogin()">
+    <div class="popup-content">
+      <h2 class="text-2xl font-bold mb-4 text-blue-900">Iniciar Sesión</h2>
+      <form onsubmit="login(event)" class="space-y-4">
+        <div>
+          <label for="login-usuario" class="block font-semibold mb-1">Usuario:</label>
+          <input type="text" id="login-usuario" required class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label for="login-password" class="block font-semibold mb-1">Contraseña:</label>
+          <input type="password" id="login-password" required class="w-full border rounded px-3 py-2" />
+        </div>
+        <p id="login-error" class="text-red-600"></p>
+        <div class="flex justify-end space-x-4">
+          <button type="button" onclick="cerrarLogin()" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Entrar</button>
+        </div>
+      </form>
+      <p class="mt-4 text-sm text-gray-600">Usuarios disponibles:<br />
+        Alumnos: alumno1/alumno, alumno2/alumno, alumno3/alumno<br/>
+        Admins: admin1/admin, admin2/admin
+      </p>
+    </div>
+  </div>
+
+  <!-- Popup Curso Info -->
+  <div id="popup-curso" class="popup" onclick="if(event.target === this) cerrarPopupCurso()">
+    <div id="contenido-curso" class="popup-content"></div>
+  </div>
+
+  <!-- Popup Pago -->
+  <div id="popup-pago" class="popup" onclick="if(event.target === this) cerrarPago()">
+    <div class="popup-content max-w-lg">
+      <h2 class="text-2xl font-bold mb-4 text-blue-900">Método de Pago</h2>
+      <form onsubmit="event.preventDefault(); pagar();" class="space-y-4">
+        <div>
+          <label class="inline-flex items-center">
+            <input type="radio" name="metodo" value="tarjeta" onclick="seleccionarMetodo('tarjeta')" />
+            <span class="ml-2">Tarjeta de Crédito/Débito</span>
+          </label>
+          <label class="inline-flex items-center ml-6">
+            <input type="radio" name="metodo" value="paypal" onclick="seleccionarMetodo('paypal')" />
+            <span class="ml-2">PayPal</span>
+          </label>
+          <label class="inline-flex items-center ml-6">
+            <input type="radio" name="metodo" value="transferencia" onclick="seleccionarMetodo('transferencia')" />
+            <span class="ml-2">Transferencia Bancaria</span>
+          </label>
+        </div>
+
+        <div id="form-tarjeta" style="display:none;">
+          <div>
+            <label for="num-tarjeta" class="block font-semibold mb-1">Número de tarjeta:</label>
+            <input type="text" id="num-tarjeta" maxlength="19" placeholder="1234 5678 9012 3456" class="w-full border rounded px-3 py-2" />
+          </div>
+          <div class="flex space-x-4">
+            <div>
+              <label for="fecha-exp" class="block font-semibold mb-1">Fecha Expiración:</label>
+              <input type="text" id="fecha-exp" placeholder="MM/AA" maxlength="5" class="border rounded px-3 py-2" />
+            </div>
+            <div>
+              <label for="cvv" class="block font-semibold mb-1">CVV:</label>
+              <input type="text" id="cvv" maxlength="3" class="border rounded px-3 py-2" />
+            </div>
+          </div>
+        </div>
+
+        <div id="mensaje-pago" class="text-green-600 font-semibold" style="display:none;"></div>
+
+        <div class="flex justify-end space-x-4">
+          <button type="button" onclick="cerrarPago()" class="btn-secondary">Cancelar</button>
+          <button id="boton-pagar" type="submit" class="btn-primary">Pagar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .btn-primary {
+      background-color: #1D4ED8;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-primary:hover {
+      background-color: #2563EB;
+    }
+    .btn-secondary {
+      background-color: #E5E7EB;
+      color: #374151;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .btn-secondary:hover {
+      background-color: #D1D5DB;
+    }
+    .popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+  </style>
+
+</body>
+</html>
