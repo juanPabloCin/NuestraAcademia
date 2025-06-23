@@ -1,1 +1,274 @@
-<html><body><h1>Bienvenido, Alumno</h1><p>Datos: cursos, pagos, asistencia, tareas, exámenes, etc.</p></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Área del Alumno - Academia SEF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .progress-bar {
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background: #4CAF50;
+    }
+    .btn-primary {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #1e40af;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+
+<!-- Header -->
+<header class="bg-blue-800 text-white p-4 shadow">
+  <div class="container mx-auto flex justify-between items-center">
+    <h1 class="text-xl font-bold">Área del Alumno</h1>
+    <div class="flex items-center space-x-4">
+      <span id="nombre-alumno" class="font-medium">María García López</span>
+      <a href="index.html" class="btn-primary">Salir</a>
+    </div>
+  </div>
+</header>
+
+<main class="container mx-auto p-4 md:p-6">
+
+  <!-- Información general -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <div class="card">
+      <h2 class="text-lg font-semibold mb-2">Cursos activos</h2>
+      <p class="text-2xl font-bold text-blue-700">2</p>
+    </div>
+    <div class="card">
+      <h2 class="text-lg font-semibold mb-2">Asistencia promedio</h2>
+      <p class="text-2xl font-bold text-green-600">88%</p>
+    </div>
+    <div class="card">
+      <h2 class="text-lg font-semibold mb-2">Calificación promedio</h2>
+      <p class="text-2xl font-bold text-purple-600">8.5</p>
+    </div>
+  </div>
+
+  <!-- Gráfico de asistencia -->
+  <div class="card mb-6">
+    <h2 class="text-xl font-semibold mb-4">Asistencia por mes</h2>
+    <canvas id="asistenciaChart" height="200"></canvas>
+  </div>
+
+  <!-- Mis cursos -->
+  <div class="card mb-6">
+    <h2 class="text-xl font-semibold mb-4">Mis Cursos</h2>
+    
+    <!-- Curso 1 -->
+    <div class="border-b pb-4 mb-4">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-semibold text-lg">Seguridad Informática</h3>
+          <p class="text-gray-600">15/03/2024 - 15/06/2024</p>
+        </div>
+        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">En progreso (65%)</span>
+      </div>
+      <div class="progress-bar mt-2">
+        <div class="progress" style="width: 65%"></div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div>
+          <p class="text-sm text-gray-500">Asistencia</p>
+          <p class="font-semibold">85%</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Tareas entregadas</p>
+          <p class="font-semibold">2/3</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Exámenes</p>
+          <p class="font-semibold">1 realizado</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Estado</p>
+          <p class="font-semibold">Al día</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Curso 2 -->
+    <div class="border-b pb-4 mb-4">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-semibold text-lg">Marketing Digital</h3>
+          <p class="text-gray-600">10/01/2024 - 10/03/2024</p>
+        </div>
+        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Completado</span>
+      </div>
+      <div class="progress-bar mt-2">
+        <div class="progress" style="width: 100%"></div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div>
+          <p class="text-sm text-gray-500">Asistencia</p>
+          <p class="font-semibold">92%</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Tareas entregadas</p>
+          <p class="font-semibold">2/2</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Exámenes</p>
+          <p class="font-semibold">1 realizado</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Calificación final</p>
+          <p class="font-semibold">9.0</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalle de actividades -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Tareas pendientes -->
+    <div class="card">
+      <h2 class="text-xl font-semibold mb-4">Tareas Pendientes</h2>
+      <div class="border rounded-lg overflow-hidden">
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="text-left py-2 px-4">Tarea</th>
+              <th class="text-left py-2 px-4">Fecha límite</th>
+              <th class="text-left py-2 px-4">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t">
+              <td class="py-2 px-4">Políticas de seguridad</td>
+              <td class="py-2 px-4">05/05/2024</td>
+              <td class="py-2 px-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">Pendiente</span></td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 px-4">Proyecto final</td>
+              <td class="py-2 px-4">25/06/2024</td>
+              <td class="py-2 px-4"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">En progreso</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Historial de pagos -->
+    <div class="card">
+      <h2 class="text-xl font-semibold mb-4">Historial de Pagos</h2>
+      <div class="border rounded-lg overflow-hidden">
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="text-left py-2 px-4">Concepto</th>
+              <th class="text-left py-2 px-4">Fecha</th>
+              <th class="text-left py-2 px-4">Importe</th>
+              <th class="text-left py-2 px-4">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t">
+              <td class="py-2 px-4">Matrícula Seguridad</td>
+              <td class="py-2 px-4">10/03/2024</td>
+              <td class="py-2 px-4">300€</td>
+              <td class="py-2 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Pagado</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exámenes realizados -->
+  <div class="card mt-6">
+    <h2 class="text-xl font-semibold mb-4">Exámenes Realizados</h2>
+    <div class="border rounded-lg overflow-hidden">
+      <table class="min-w-full">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="text-left py-2 px-4">Examen</th>
+            <th class="text-left py-2 px-4">Fecha</th>
+            <th class="text-left py-2 px-4">Calificación</th>
+            <th class="text-left py-2 px-4">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-t">
+            <td class="py-2 px-4">Examen parcial Seguridad</td>
+            <td class="py-2 px-4">20/04/2024</td>
+            <td class="py-2 px-4">8.0</td>
+            <td class="py-2 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Aprobado</span></td>
+          </tr>
+          <tr class="border-t">
+            <td class="py-2 px-4">Examen final Marketing</td>
+            <td class="py-2 px-4">05/03/2024</td>
+            <td class="py-2 px-4">9.0</td>
+            <td class="py-2 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Aprobado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Gráfico de asistencia
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('asistenciaChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
+        datasets: [{
+          label: 'Asistencia %',
+          data: [90, 85, 92, 88, 85],
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: function(value) {
+                return value + '%';
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
