@@ -1,102 +1,224 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Academia SEF – Formación Profesional</title>
+  <title>Academia SEF – Formación Profesional y Seguridad Informática</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    function abrirLogin() {
-      document.getElementById('loginModal').classList.remove('hidden');
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
     }
-
-    function cerrarLogin() {
-      document.getElementById('loginModal').classList.add('hidden');
+    .popup-content {
+      background: white;
+      max-width: 600px;
+      width: 90%;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
     }
-
-    function iniciarSesion(event) {
-      event.preventDefault();
-      const usuario = document.getElementById('usuario').value.trim();
-      const clave = document.getElementById('clave').value.trim();
-
-      if ((usuario === 'alumno' && clave === 'alumno') ||
-          (usuario === 'alumno2' && clave === 'alumno2') ||
-          (usuario === 'alumno3' && clave === 'alumno3')) {
-        window.location.href = 'alumno.html';
-      } else if (
-        (usuario === 'admin' && clave === 'admin') ||
-        (usuario === 'admin2' && clave === 'admin2')) {
-        window.location.href = 'admin.html';
-      } else {
-        alert('Credenciales incorrectas');
-      }
+    .btn-primary {
+      background-color: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
     }
-  </script>
+    .btn-primary:hover {
+      background-color: #1e40af;
+    }
+    .area-personal {
+      background: #ebf8ff;
+      color: #0c4a6e;
+      font-weight: 600;
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .area-personal:hover {
+      background: #bae6fd;
+    }
+    #contacto {
+      background-color: #e0f2fe;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      margin-top: 5rem;
+      box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-<header class="bg-blue-800 text-white p-4">
-  <div class="container mx-auto flex justify-between items-center">
-    <div class="flex items-center space-x-4">
-      <img src="https://dummyimage.com/40x40/ffffff/000000&text=A" alt="Logo" class="h-10 w-10 rounded-full bg-white">
-      <h1 class="text-xl font-bold">Academia SEF</h1>
-    </div>
-    <nav>
-      <a href="#cursos" class="mx-2 hover:underline">Cursos</a>
-      <a href="#contacto" class="mx-2 hover:underline">Contacto</a>
-      <button onclick="abrirLogin()" class="mx-2 bg-white text-blue-800 font-semibold px-3 py-1 rounded hover:bg-blue-100">Área Personal</button>
-    </nav>
-  </div>
+<!-- Header / Navegación -->
+<header class="bg-white shadow sticky top-0 z-30">
+  <nav class="container mx-auto flex justify-between items-center py-4 px-6 md:px-0">
+    <a href="#" class="font-bold text-xl text-blue-700">Academia SEF</a>
+    <ul class="flex gap-6 items-center text-blue-800 font-semibold">
+      <li><a href="#inicio" class="hover:text-blue-600">Inicio</a></li>
+      <li><a href="#cursos" class="hover:text-blue-600">Cursos</a></li>
+      <li><a href="#contacto" class="hover:text-blue-600">Contacto</a></li>
+      <li><a href="#" onclick="mostrarLogin()" class="area-personal">Área Personal</a></li>
+    </ul>
+  </nav>
 </header>
 
-<main class="flex-grow">
-  <section id="cursos" class="py-16 px-6 bg-white">
-    <div class="max-w-6xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-10 text-blue-900">Nuestros Cursos</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <div class="bg-gray-100 p-4 rounded shadow">Ciberseguridad Básica</div>
-        <div class="bg-gray-100 p-4 rounded shadow">Programación en Python</div>
-        <div class="bg-gray-100 p-4 rounded shadow">Análisis Forense Digital</div>
-        <div class="bg-gray-100 p-4 rounded shadow">Hacking Ético</div>
-        <div class="bg-gray-100 p-4 rounded shadow">Redes y Sistemas</div>
-        <div class="bg-gray-100 p-4 rounded shadow">Seguridad en Aplicaciones Web</div>
-      </div>
-    </div>
-  </section>
+<!-- Sección Inicio -->
+<section id="inicio" class="container mx-auto px-6 pt-12 flex flex-col items-center text-center max-w-3xl">
+  <h1 class="text-4xl font-extrabold mb-4 text-blue-900">Formación Profesional en Seguridad Informática</h1>
+  <p class="mb-6 text-lg text-gray-700">Cursos presenciales y online financiados por el SEPE y también cursos de pago para ampliar tus conocimientos. Formación práctica con profesores expertos en activo.</p>
+  <button class="btn-primary px-6 py-3 rounded" onclick="document.getElementById('cursos').scrollIntoView({behavior:'smooth'})">Ver Cursos</button>
+</section>
 
-  <section id="contacto" class="bg-blue-50 py-16 px-6">
-    <div class="max-w-xl mx-auto text-center">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6">Contáctanos</h2>
-      <form action="#" method="POST">
-        <input type="text" required placeholder="Nombre completo" class="w-full border p-2 rounded mb-2">
-        <input type="email" required placeholder="Correo electrónico" class="w-full border p-2 rounded mb-2">
-        <textarea required placeholder="Tu mensaje" class="w-full border p-2 rounded mb-4"></textarea>
-        <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded">Enviar</button>
-      </form>
-    </div>
-  </section>
-</main>
+<!-- Sección Cursos -->
+<section id="cursos" class="container mx-auto px-6 mt-16 mb-12 max-w-7xl">
+  <h2 class="text-3xl font-bold mb-8 text-center text-blue-900">Nuestros Cursos</h2>
+  <div class="flex flex-wrap justify-center gap-8">
 
-<footer class="bg-blue-900 text-white text-sm py-6">
-  <div class="container mx-auto px-6 text-center">
-    <p>&copy; 2025 Academia SEF - Todos los derechos reservados</p>
+    <!-- Curso 1: Seguridad Informática (pago) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-blue-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('seguridad')">
+      <h3 class="text-xl font-semibold mb-2">Seguridad Informática</h3>
+      <p>Aprende a proteger sistemas y redes contra ciberataques con este curso completo que incluye prácticas reales.</p>
+      <p class="mt-2 font-bold text-red-600">Costo: 300€</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('seguridad'); event.stopPropagation()">Más información</button>
+    </article>
+
+    <!-- Curso 2: Atención al Cliente (gratis) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('atencion-cliente')">
+      <h3 class="text-xl font-semibold mb-2">Atención al Cliente</h3>
+      <p>Desarrolla habilidades profesionales para ofrecer una atención excepcional en cualquier sector.</p>
+      <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('atencion-cliente'); event.stopPropagation()">Más información</button>
+    </article>
+
+    <!-- Curso 3: Administración y Gestión (gratis) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('administracion')">
+      <h3 class="text-xl font-semibold mb-2">Administración y Gestión</h3>
+      <p>Aprende procesos administrativos esenciales para gestionar eficientemente cualquier negocio.</p>
+      <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('administracion'); event.stopPropagation()">Más información</button>
+    </article>
+
+    <!-- Curso 4: Marketing Digital (gratis) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('marketing-digital')">
+      <h3 class="text-xl font-semibold mb-2">Marketing Digital</h3>
+      <p>Domina las estrategias digitales para posicionar negocios en internet.</p>
+      <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('marketing-digital'); event.stopPropagation()">Más información</button>
+    </article>
+
+    <!-- Curso 5: Programación Web (gratis) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('programacion-web')">
+      <h3 class="text-xl font-semibold mb-2">Programación Web</h3>
+      <p>Conviértete en desarrollador web full-stack aprendiendo las tecnologías más demandadas.</p>
+      <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('programacion-web'); event.stopPropagation()">Más información</button>
+    </article>
+
+    <!-- Curso 6: Excel Avanzado (gratis) -->
+    <article class="bg-white shadow-md rounded-lg p-6 max-w-sm w-full border border-green-300 hover:shadow-lg transition cursor-pointer" onclick="mostrarInfoCurso('excel-avanzado')">
+      <h3 class="text-xl font-semibold mb-2">Excel Avanzado</h3>
+      <p>Lleva tus habilidades con Excel al siguiente nivel con funciones avanzadas y automatización.</p>
+      <p class="mt-2 font-bold text-green-600">GRATIS - Financiado por el SEPE</p>
+      <button class="btn-primary mt-4" onclick="mostrarInfoCurso('excel-avanzado'); event.stopPropagation()">Más información</button>
+    </article>
+
+  </div>
+</section>
+
+<!-- Sección Contacto -->
+<section id="contacto" class="container mx-auto px-6 max-w-xl">
+  <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">Contáctanos</h2>
+  <p class="text-center mb-6 text-blue-700">¿Tienes dudas? Escríbenos y te responderemos lo antes posible.</p>
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSdXXXXXXXXXXXXXXX/formResponse" method="POST" target="_blank" class="space-y-4">
+    <input type="text" name="entry.123456" required placeholder="Nombre completo" class="w-full border border-blue-300 p-3 rounded" />
+    <input type="email" name="entry.654321" required placeholder="Correo electrónico" class="w-full border border-blue-300 p-3 rounded" />
+    <textarea name="entry.112233" required placeholder="Tu mensaje" rows="5" class="w-full border border-blue-300 p-3 rounded resize-none"></textarea>
+    <button type="submit" class="btn-primary w-full py-3 text-center font-semibold">Enviar</button>
+  </form>
+</section>
+
+<!-- Popup Login -->
+<div id="popup-login" class="popup" onclick="cerrarLogin()">
+  <div class="popup-content" onclick="event.stopPropagation()">
+    <h2 class="text-xl font-bold mb-4">Acceso al Área Personal</h2>
+    <form id="form-login" onsubmit="validarLogin(event)">
+      <input type="text" id="usuario" placeholder="Usuario" class="border p-2 rounded w-full mb-2" required>
+      <input type="password" id="password" placeholder="Contraseña" class="border p-2 rounded w-full mb-4" required>
+      <p id="mensaje-error" class="text-red-600 mb-4" style="display: none;">Usuario o contraseña incorrectos</p>
+      <button type="submit" class="btn-primary w-full py-2">Iniciar sesión</button>
+    </form>
+    <button onclick="cerrarLogin()" class="btn-primary mt-4 w-full">Cancelar</button>
+  </div>
+</div>
+
+<!-- LOPD / Privacidad -->
+<footer class="container mx-auto px-6 py-6 mt-16 text-center text-gray-600 text-sm">
+  <button class="underline hover:text-blue-800" onclick="toggleProteccionDatos()">Aviso de Privacidad y Protección de Datos</button>
+  <div id="proteccion-datos" class="mt-4 max-w-3xl mx-auto text-left bg-white p-6 rounded shadow" style="display: none;">
+    <h3 class="font-bold mb-2 text-blue-900">Aviso de Privacidad y Protección de Datos</h3>
+    <p>En Academia SEF respetamos tu privacidad y protegemos tus datos personales conforme a la normativa vigente.</p>
+    <p>Los datos recogidos serán utilizados exclusivamente para la gestión de tus solicitudes y cursos.</p>
+    <p>Para más información, consulta nuestra <a href="#" class="text-blue-700 underline">Política de Privacidad</a>.</p>
   </div>
 </footer>
 
-<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-    <h3 class="text-lg font-bold mb-4">Iniciar Sesión</h3>
-    <form onsubmit="iniciarSesion(event)">
-      <input type="text" id="usuario" placeholder="Usuario" required class="w-full border p-2 rounded mb-2">
-      <input type="password" id="clave" placeholder="Contraseña" required class="w-full border p-2 rounded mb-4">
-      <div class="flex justify-between">
-        <button type="button" onclick="cerrarLogin()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancelar</button>
-        <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">Entrar</button>
-      </div>
-    </form>
-  </div>
-</div>
+<script>
+  // Toggle LOPD
+  function toggleProteccionDatos() {
+    const sec = document.getElementById('proteccion-datos');
+    sec.style.display = sec.style.display === 'block' ? 'none' : 'block';
+    if (sec.style.display === 'block') {
+      sec.scrollIntoView({behavior: 'smooth'});
+    }
+  }
+
+  // Mostrar popup login
+  function mostrarLogin() {
+    document.getElementById('popup-login').style.display = 'flex';
+    document.getElementById('mensaje-error').style.display = 'none';
+  }
+
+  function cerrarLogin() {
+    document.getElementById('popup-login').style.display = 'none';
+  }
+
+  // Validar login
+  function validarLogin(event) {
+    event.preventDefault();
+    const usuario = document.getElementById('usuario').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    const usuariosValidos = {
+      'alumno': { password: 'alumno', role: 'alumno' },
+      'maria.garcia': { password: 'alumno', role: 'alumno' },
+      'juan.lopez': { password: 'alumno', role: 'alumno' },
+      'admin': { password: 'admin', role: 'admin' }
+    };
+
+    if (usuariosValidos[usuario] && usuariosValidos[usuario].password === password) {
+      if (usuariosValidos[usuario].role === 'alumno') {
+        window.location.href = 'alumno.html';
+      } else {
+        window.location.href = 'admin.html';
+      }
+    } else {
+      document.getElementById('mensaje-error').style.display = 'block';
+    }
+  }
+</script>
 
 </body>
 </html>
