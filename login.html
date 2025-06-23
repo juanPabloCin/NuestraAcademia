@@ -1,0 +1,34 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Área Personal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <form onsubmit="return validarLogin()" class="bg-white p-6 rounded shadow w-full max-w-sm">
+    <h1 class="text-xl font-bold mb-4">Acceso Área Personal</h1>
+    <input type="text" id="usuario" placeholder="Usuario" required class="w-full border p-2 rounded mb-3" />
+    <input type="password" id="clave" placeholder="Contraseña" required class="w-full border p-2 rounded mb-3" />
+    <button type="submit" class="w-full bg-blue-700 text-white px-4 py-2 rounded">Ingresar</button>
+    <p id="error" class="text-red-600 mt-2 hidden">Usuario o contraseña incorrectos</p>
+  </form>
+
+  <script>
+    function validarLogin() {
+      const u = document.getElementById('usuario').value;
+      const p = document.getElementById('clave').value;
+      if ((u === 'admin' && p === 'admin') || (u === 'alumno' && p === 'alumno')) {
+        alert('Bienvenido, redirigiendo...');
+        window.location.href = "index.html"; // o redirige a otra sección
+        return false;
+      } else {
+        document.getElementById('error').classList.remove('hidden');
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>
