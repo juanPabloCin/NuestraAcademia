@@ -5,6 +5,54 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Academia SEF – Formación Profesional</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media (max-width: 640px) {
+      .grid-cols-1 {
+        grid-template-columns: 1fr;
+      }
+      section {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      h2 {
+        font-size: 1.75rem;
+      }
+      #modalPago, #modalGratuito, #loginModal {
+        width: 90%;
+        margin: 0 auto;
+      }
+      .modal-content {
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 1rem;
+      }
+      .modal-form input, .modal-form textarea, .modal-form select {
+        font-size: 16px;
+      }
+      .modal-buttons {
+        flex-direction: column;
+      }
+      .modal-buttons button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      .modal-buttons button:last-child {
+        margin-bottom: 0;
+      }
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-links {
+        margin-top: 1rem;
+        flex-direction: column;
+      }
+    }
+  </style>
   <script>
     function abrirLogin() {
       document.getElementById('loginModal').classList.remove('hidden');
@@ -67,29 +115,44 @@
         alert('Por favor, suba todos los documentos requeridos');
       }
     }
+
+    // Menú móvil
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('menuButton').addEventListener('click', function() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('hidden');
+      });
+    });
   </script>
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
 
 <header class="bg-blue-800 text-white p-4">
-  <div class="container mx-auto flex justify-between items-center">
-    <div class="flex items-center space-x-4">
-      <img src="https://dummyimage.com/40x40/ffffff/000000&text=A" alt="Logo" class="h-10 w-10 rounded-full bg-white">
-      <h1 class="text-xl font-bold">Academia SEF</h1>
+  <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+    <div class="flex items-center justify-between w-full sm:w-auto mb-2 sm:mb-0">
+      <div class="flex items-center space-x-4">
+        <img src="https://dummyimage.com/40x40/ffffff/000000&text=A" alt="Logo" class="h-10 w-10 rounded-full bg-white">
+        <h1 class="text-xl font-bold">Academia SEF</h1>
+      </div>
+      <button class="sm:hidden" id="menuButton">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
-    <nav>
-      <a href="#cursos" class="mx-2 hover:underline">Cursos</a>
-      <a href="#contacto" class="mx-2 hover:underline">Contacto</a>
-      <button onclick="abrirLogin()" class="mx-2 bg-white text-blue-800 font-semibold px-3 py-1 rounded hover:bg-blue-100">Área Personal</button>
+    <nav id="mobileMenu" class="hidden sm:flex flex-col sm:flex-row w-full sm:w-auto bg-blue-800 sm:bg-transparent p-2 sm:p-0">
+      <a href="#cursos" class="mx-2 py-2 sm:py-0 hover:underline">Cursos</a>
+      <a href="#contacto" class="mx-2 py-2 sm:py-0 hover:underline">Contacto</a>
+      <button onclick="abrirLogin()" class="mx-2 mt-2 sm:mt-0 bg-white text-blue-800 font-semibold px-3 py-1 rounded hover:bg-blue-100">Área Personal</button>
     </nav>
   </div>
 </header>
 
 <main class="flex-grow">
-  <section id="cursos" class="py-16 px-6 bg-white">
+  <section id="cursos" class="py-16 px-4 sm:px-6 bg-white">
     <div class="max-w-6xl mx-auto text-center">
       <h2 class="text-3xl font-bold mb-10 text-blue-900">Nuestros Cursos</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-2">
         <!-- Curso 1 -->
         <div class="bg-white border border-gray-200 rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
           <img src="https://dummyimage.com/600x400/3b82f6/ffffff&text=Ciberseguridad" alt="Ciberseguridad" class="w-full h-48 object-cover">
@@ -200,7 +263,7 @@
     </div>
   </section>
 
-  <section id="contacto" class="bg-blue-50 py-16 px-6">
+  <section id="contacto" class="bg-blue-50 py-16 px-4 sm:px-6">
     <div class="max-w-xl mx-auto text-center">
       <h2 class="text-3xl font-bold text-gray-800 mb-6">Contáctanos</h2>
       <form action="#" method="POST">
@@ -214,14 +277,14 @@
 </main>
 
 <footer class="bg-blue-900 text-white py-8">
-  <div class="container mx-auto px-6">
-    <div class="flex flex-col md:flex-row justify-between items-center">
-      <div class="mb-4 md:mb-0">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col items-center md:flex-row md:justify-between footer-content">
+      <div class="mb-4 md:mb-0 text-center md:text-left">
         <p>&copy; 2025 Academia SEF - Todos los derechos reservados</p>
       </div>
-      <div class="flex flex-col items-center md:items-end">
-        <a href="#" onclick="abrirPopup('modalPrivacidad')" class="hover:underline mb-2">Conoce cómo tratamos tus datos personales</a>
-        <div class="flex space-x-4">
+      <div class="flex flex-col items-center">
+        <a href="#" onclick="abrirPopup('modalPrivacidad')" class="hover:underline mb-2 text-center">Conoce cómo tratamos tus datos personales</a>
+        <div class="flex space-x-4 footer-links">
           <a href="#" class="hover:text-blue-200">Aviso Legal</a>
           <a href="#" class="hover:text-blue-200">Cookies</a>
           <a href="#" class="hover:text-blue-200">Contacto</a>
@@ -233,9 +296,9 @@
 
 <!-- Modal de pago -->
 <div id="modalPago" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full modal-content">
     <h3 class="text-xl font-bold mb-4">Completa tu inscripción</h3>
-    <form onsubmit="procesarPago(event)">
+    <form onsubmit="procesarPago(event)" class="modal-form">
       <div class="mb-4">
         <label class="block text-gray-700 mb-2">Nombre completo</label>
         <input type="text" required class="w-full border p-2 rounded">
@@ -258,7 +321,7 @@
           <input type="text" id="cvv" placeholder="123" required class="w-full border p-2 rounded">
         </div>
       </div>
-      <div class="flex justify-between">
+      <div class="flex justify-between modal-buttons">
         <button type="button" onclick="cerrarPopup('modalPago')" class="bg-gray-600 text-white px-4 py-2 rounded">Cancelar</button>
         <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">Pagar ahora</button>
       </div>
@@ -268,9 +331,9 @@
 
 <!-- Modal curso gratuito -->
 <div id="modalGratuito" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full modal-content">
     <h3 class="text-xl font-bold mb-4">Solicitud para curso subvencionado</h3>
-    <form onsubmit="enviarDocumentacion(event)">
+    <form onsubmit="enviarDocumentacion(event)" class="modal-form">
       <div class="mb-4">
         <label class="block text-gray-700 mb-2">Nombre completo</label>
         <input type="text" required class="w-full border p-2 rounded">
@@ -291,7 +354,7 @@
         <label class="block text-gray-700 mb-2">Tarjeta de demandante de empleo (PDF o imagen)</label>
         <input type="file" id="tarjetaEmpleo" required class="w-full border p-2 rounded">
       </div>
-      <div class="flex justify-between">
+      <div class="flex justify-between modal-buttons">
         <button type="button" onclick="cerrarPopup('modalGratuito')" class="bg-gray-600 text-white px-4 py-2 rounded">Cancelar</button>
         <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Enviar solicitud</button>
       </div>
@@ -301,7 +364,7 @@
 
 <!-- Modal privacidad -->
 <div id="modalPrivacidad" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto">
-  <div class="bg-white p-6 rounded shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto m-4">
+  <div class="bg-white p-6 rounded shadow-lg max-w-4xl w-full max-h-screen overflow-y-auto m-4 modal-content">
     <h3 class="text-2xl font-bold mb-4">Política de Protección de Datos</h3>
     <div class="prose max-w-none">
       <h4 class="font-bold text-lg mt-4">1. Responsable del tratamiento</h4>
@@ -366,14 +429,14 @@
   </div>
 </div>
 
-<!-- Modal login (original) -->
+<!-- Modal login -->
 <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+  <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full modal-content">
     <h3 class="text-lg font-bold mb-4">Iniciar Sesión</h3>
-    <form onsubmit="iniciarSesion(event)">
+    <form onsubmit="iniciarSesion(event)" class="modal-form">
       <input type="text" id="usuario" placeholder="Usuario" required class="w-full border p-2 rounded mb-2">
       <input type="password" id="clave" placeholder="Contraseña" required class="w-full border p-2 rounded mb-4">
-      <div class="flex justify-between">
+      <div class="flex justify-between modal-buttons">
         <button type="button" onclick="cerrarLogin()" class="bg-gray-600 text-white px-4 py-2 rounded">Cancelar</button>
         <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded">Entrar</button>
       </div>
